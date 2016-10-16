@@ -1,21 +1,4 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-           ______     ______     ______   __  __     __     ______
-          /\  == \   /\  __ \   /\__  _\ /\ \/ /    /\ \   /\__  _\
-          \ \  __<   \ \ \/\ \  \/_/\ \/ \ \  _"-.  \ \ \  \/_/\ \/
-           \ \_____\  \ \_____\    \ \_\  \ \_\ \_\  \ \_\    \ \_\
-            \/_____/   \/_____/     \/_/   \/_/\/_/   \/_/     \/_/
-
-
-This is a sample Slack bot built with Botkit.
-
-This bot demonstrates many of the core features of Botkit:
-
-* Connect to Slack using the real time API
-* Receive messages based on "spoken" patterns
-* Reply to messages
-* Use the conversation system to ask questions
-* Use the built in storage system to store and retrieve information
-  for a user.
 
 # RUN THE BOT:
 
@@ -62,6 +45,7 @@ This bot demonstrates many of the core features of Botkit:
     -> http://howdy.ai/botkit
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+var quoter=require('./quoter')
 
 
 if (!process.env.token) {
@@ -113,7 +97,7 @@ controller.hears(['call me (.*)', 'my name is (.*)'], 'direct_message,direct_men
         }
         user.name = name;
         controller.storage.users.save(user, function(err, id) {
-            bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
+            bot.reply(message, quoter());
         });
     });
 });
@@ -159,7 +143,7 @@ controller.hears(['what is my name', 'who am i'], 'direct_message,direct_mention
 
                     convo.on('end', function(convo) {
                         if (convo.status == 'completed') {
-                            bot.reply(message, 'OK! I will update my dossier...');
+                            bot.reply(message, quoter());
 
                             controller.storage.users.get(message.user, function(err, user) {
                                 if (!user) {
@@ -169,7 +153,7 @@ controller.hears(['what is my name', 'who am i'], 'direct_message,direct_mention
                                 }
                                 user.name = convo.extractResponse('nickname');
                                 controller.storage.users.save(user, function(err, id) {
-                                    bot.reply(message, 'Got it. I will call you ' + user.name + ' from now on.');
+                                    bot.reply(message, quoter());
                                 });
                             });
 
@@ -177,7 +161,7 @@ controller.hears(['what is my name', 'who am i'], 'direct_message,direct_mention
 
                         } else {
                             // this happens if the conversation ended prematurely for some reason
-                            bot.reply(message, 'OK, nevermind!');
+                            bot.reply(message, quoter());
                         }
                     });
                 }
